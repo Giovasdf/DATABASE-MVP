@@ -1,17 +1,20 @@
 FROM alpine:3.18
 
-# Instala dependencias mínimas
-RUN apk add --no-cache ca-certificates curl
+# Instala utilidades necesarias (incluye unzip)
+RUN apk add --no-cache ca-certificates curl unzip
 
-# Descarga la versión exacta de PocketBase
+# Establece el directorio de trabajo
+# WORKDIR /app
+
+# Descarga y descomprime PocketBase
 RUN curl -L https://github.com/pocketbase/pocketbase/releases/download/v0.26.6/pocketbase_0.26.6_linux_amd64.zip -o pb.zip \
  && unzip pb.zip \
  && rm pb.zip
 
-# Copia tu backup (carpeta pb_data) al contenedor
-COPY pb_data /pb_data
+# Copia datos persistentes (si existen)
+COPY pb_data /app/pb_data
 
-# Expone el puerto de la app
+# Expón el puerto
 EXPOSE 8080
 
 # Ejecuta PocketBase
